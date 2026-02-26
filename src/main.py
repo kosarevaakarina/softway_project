@@ -6,9 +6,9 @@ from fastapi import FastAPI, Request
 from pydantic import ValidationError
 from starlette.responses import JSONResponse
 
-from src.api.task_routers import router as task_router
 from src.core.config import AppSettings, redis_settings
 from src.core.logger import logger
+from src.infrastructure.api.router import router as task_router
 
 app = FastAPI(**AppSettings().dict())
 app.include_router(task_router, prefix="/tasks", tags=["tasks"])

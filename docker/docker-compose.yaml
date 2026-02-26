@@ -59,7 +59,7 @@ services:
       - PYTHONPATH=/app/src
     volumes:
       - ..:/app
-    command: arq src.workers.config.WorkerSettings
+    command: arq src.infrastructure.worker.config.WorkerSettings
     networks:
       - app-network
 
