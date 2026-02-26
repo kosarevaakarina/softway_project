@@ -4,6 +4,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from src.domain.entities import Task, TaskStatus
 from src.domain.interfaces import TaskRepository
 
+from .mapper import TaskMapper
 from .models import TaskModel
 
 
@@ -16,21 +17,21 @@ class PostgresTaskRepository(TaskRepository):
         self._session.add(row)
         await self._session.commit()
         await self._session.refresh(row)
-        return row.to_entity()
+        return TaskMapper.to_entity(row)
 
     async def get_by_id(self, task_id: int) -> Task | None:
         result = await self._session.execute(
             select(TaskModel).where(TaskModel.id == task_id)
         )
         row = result.scalars().first()
-        return row.to_entity() if row else None
+        return TaskMapper.to_entity(row) if row else None
 
     async def get_by_id_for_update(self, task_id: int) -> Task | None:
         result = await self._session.execute(
             select(TaskModel).where(TaskModel.id == task_id).with_for_update()
         )
         row = result.scalars().first()
-        return row.to_entity() if row else None
+        return TaskMapper.to_entity(row) if row else None
 
     async def list_by_status(self, status: TaskStatus, offset: int, limit: int) -> list[Task]:
         query = (
@@ -40,7 +41,7 @@ class PostgresTaskRepository(TaskRepository):
             .limit(limit)
         )
         result = await self._session.execute(query)
-        return [row.to_entity() for row in result.scalars().all()]
+        return [TaskMapper.to_entity(row) for row in result.scalars().all()]
 
     async def count_by_status(self, status: TaskStatus) -> int:
         query = select(func.count()).select_from(TaskModel).where(TaskModel.status == status)
