@@ -2,14 +2,14 @@ from datetime import datetime
 
 from pydantic import BaseModel, ConfigDict, Field
 
-from src.models.task import TaskStatus
+from src.domain.entities import TaskStatus
 
 
-class TaskCreate(BaseModel):
+class TaskCreateRequest(BaseModel):
     title: str = Field(..., min_length=1, max_length=100)
 
 
-class TaskInfo(BaseModel):
+class TaskResponse(BaseModel):
     id: int
     title: str
     status: TaskStatus
@@ -21,7 +21,7 @@ class TaskInfo(BaseModel):
 
 
 class TaskListResponse(BaseModel):
-    items: list[TaskInfo]
+    items: list[TaskResponse]
     total: int
     offset: int
     limit: int

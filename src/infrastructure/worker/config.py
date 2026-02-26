@@ -1,5 +1,6 @@
 from src.core.config import redis_settings
-from src.workers.task_worker import process_task
+
+from .task_worker import process_task
 
 
 class WorkerSettings:
